@@ -50,7 +50,7 @@ class Solution {
         return answer;
     }
     
-    public static void dfs(int v, int[][] adjArray, boolean[] visited){
+    public void dfs(int v, int[][] adjArray, boolean[] visited){
         int l = adjArray.length - 1;
         visited[v] = true;
         //System.out.print(v + " ");
