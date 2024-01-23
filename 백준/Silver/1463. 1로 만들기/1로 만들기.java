@@ -1,5 +1,4 @@
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,11 +23,11 @@ public class Main {
                  visited[n - 1] = visited[n] + 1;
                  queue.add(n - 1);
              }
-             if (n % 3 == 0 && n >= 3 && visited[n / 3] == 0) {
+             if (n % 3 == 0 &&  visited[n / 3] == 0) {
                  visited[n / 3] = visited[n] + 1;
                  queue.add(n / 3);
              }
-             if (n % 2 == 0 && n >= 2 && visited[n / 2] == 0) {
+             if (n % 2 == 0 &&  visited[n / 2] == 0) {
                  visited[n / 2] = visited[n] + 1;
                  queue.add(n / 2);
              }
