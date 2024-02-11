@@ -8,11 +8,10 @@ public class Main {
     private static int N;
     private static int[][] arr;
     private static boolean[][] visited;
-    private static int[][] dist;
     private static int[] dx = { 0, 1, 0, -1 };
     private static int[] dy = { -1, 0, 1, 0 };
     private static int index = 1;
-
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
@@ -20,12 +19,10 @@ public class Main {
             if(N == 0) break;
             arr = new int[N][N];
             visited = new boolean[N][N];
-            dist = new int[N][N];
             for (int i = 0; i < N; i++) {
                 StringTokenizer st = new StringTokenizer(br.readLine());
                 for (int j = 0; j < N; j++) {
                     arr[i][j] = Integer.parseInt(st.nextToken());
-                    dist[i][j] = Integer.MAX_VALUE;
                 }
             }
 
@@ -35,7 +32,6 @@ public class Main {
 
     private static void bfs(int x,int y) {
         queue.add(new Node(x, y, arr[x][y]));
-        dist[x][y] = arr[x][y];
         visited[x][y] = true;
         while (!queue.isEmpty()) {
             Node curNode = queue.poll();
@@ -43,8 +39,6 @@ public class Main {
                 System.out.println("Problem "+index+": " + curNode.cost);
                 index++;
             }
-
-            if (dist[curNode.x][curNode.y]< curNode.cost) continue;
 
             for (int i = 0; i < 4; i++) {
                 int nx = curNode.x + dx[i];
