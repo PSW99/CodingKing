@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.ClientInfoStatus;
 import java.util.*;
 
 public class Main {
@@ -31,7 +30,7 @@ public class Main {
         visited = new boolean[N + 1];
         visited[V] = true;
 
-        dfs(V, 0);
+        dfs(V);
         System.out.println(sb);
         bfs(V);
     }
@@ -60,22 +59,19 @@ public class Main {
         System.out.println(sb);
     }
 
-    private static void dfs(int v,int count) {
+    private static void dfs(int v) {
         sb.append(v).append(" ");
-        if (count == M) {
-            return;
-        }
+
         List<Integer> list = graph.get(v);
         list.sort(Comparator.naturalOrder());
 
         for (int u : list) {
             if (!visited[u]) {
                 visited[u] = true;
-                dfs(u, count + 1);
+                dfs(u);
             }
         }
 
     }
-
 
 }
