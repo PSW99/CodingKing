@@ -1,52 +1,56 @@
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class Main {
+    private static int L, C;
+    private static List<Character> alphabet = new ArrayList<>();
+    private static boolean[] visited;
 
-    static char arr[];
-    static boolean[] visited;
-    static int l, c;
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        l = sc.nextInt();
-        c = sc.nextInt();
-
-        arr = new char[c];
-        visited = new boolean[c];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = sc.next().charAt(0);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        L = Integer.parseInt(st.nextToken());
+        C = Integer.parseInt(st.nextToken());
+        visited = new boolean[C];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < C; i++) {
+            alphabet.add(st.nextToken().charAt(0));
         }
-        Arrays.sort(arr);
 
-        dfs(0, 0);
+        alphabet.sort(Comparator.naturalOrder());
 
+        backtracking(0, 0);
     }
 
-    static void dfs(int start, int count) {
-        if (count == l) {
+    private static void backtracking(int start, int count) {
+        if (count == L) {
             String word = "";
-            int a = 0;
-            int b = 0;
-            for (int i = 0; i < c; i++) {
+            int gather = 0;
+            int consonant = 0;
+            for (int i = 0; i < C; i++) {
                 if (visited[i]) {
-                    word += arr[i];
-
-                    if (arr[i] == 'a' || arr[i] == 'e' || arr[i] == 'i' || arr[i] == 'o' || arr[i] == 'u') {
-                        a++;
-                    } else {
-                        b++;
-                    }
+                    char x = alphabet.get(i);
+                    word += x;
+                    if (x == 'a' || x == 'e' || x == 'i' || x == 'o' || x == 'u') {
+                        gather++;
+                    } else consonant++;
                 }
             }
-            if (a >= 1 && b >= 2) {
-                System.out.println(word);
-            }
+            if (gather >= 1 && consonant >= 2) System.out.println(word);
+            return;
         }
 
-        for (int i = start; i < c; i++) {
+        for (int i = start; i < C; i++) {
             visited[i] = true;
-            dfs(i + 1, count + 1);
+            backtracking(i + 1, count + 1);
             visited[i] = false;
         }
+
     }
+
 }
