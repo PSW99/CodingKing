@@ -22,23 +22,26 @@ public class Main {
 
     private static void bfs(int start) {
         queue.add(new Node(start, 0));
-
+        visited[start] = true;
         while (!queue.isEmpty()) {
 
             Node curnode = queue.poll();
-            visited[curnode.x] = true;
             if (curnode.x == K) {
                 min = Math.min(min, curnode.time);
             }
             if (curnode.x * 2 < 100001 && !visited[curnode.x * 2]) {
                 queue.add(new Node(curnode.x * 2, curnode.time));
-            }
-            if (curnode.x + 1 < 100001 && !visited[curnode.x + 1]) {
-                queue.add(new Node(curnode.x + 1, curnode.time + 1));
+                visited[curnode.x * 2] = true;
             }
             if (curnode.x - 1 >= 0 && !visited[curnode.x - 1]) {
                 queue.add(new Node(curnode.x - 1, curnode.time + 1));
+                visited[curnode.x - 1] = true;
             }
+            if (curnode.x + 1 < 100001 && !visited[curnode.x + 1]) {
+                queue.add(new Node(curnode.x + 1, curnode.time + 1));
+                visited[curnode.x + 1] = true;
+            }
+
 
         }
     }
