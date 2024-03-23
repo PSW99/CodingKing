@@ -85,6 +85,7 @@ public class Main {
 
             if (map[x][y] != 0 && map[x][y] != islandNum) {
                 min = Math.min(min, distance);
+                break;
             }
             for (int i = 0; i < 4; i++) {
                 int nx = x + dx[i];
