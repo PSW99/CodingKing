@@ -88,12 +88,5 @@ public class Main {
             this.y = y;
         }
 
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    '}';
-        }
     }
 }
