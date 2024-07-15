@@ -2,24 +2,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static int T;
-    private static int N, M;
+    private static int T, N, M, count;
     private static String key;
     private static boolean[] hasKey;
     private static char[][] board;
     private static boolean[][] visited;
     private static int[] dx = {-1, 0, 1, 0}, dy = {0, 1, 0, -1};
-    private static Queue<Node> queue = new ArrayDeque<>();
-    private static int count;
+    private static Queue<Node> queue;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         T = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
+        
         while (T-- > 0) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             N = Integer.parseInt(st.nextToken());
@@ -46,11 +45,11 @@ public class Main {
             visited[0][0] = true;
             queue.add(new Node(0, 0));
             bfs();
-            System.out.println(count);
+            sb.append(count).append("\n");
         }
-
+        System.out.println(sb);
     }
-
+    
     private static void bfs() {
         while (!queue.isEmpty()) {
             Node cur = queue.poll();
@@ -61,12 +60,13 @@ public class Main {
                 int ny = y + dy[i];
                 if (nx < 0 || nx >= N + 2 || ny < 0 || ny >= M + 2 || visited[nx][ny] || board[nx][ny] == '*') continue;
 
-                //문서발견
+                //문서 발견
                 if (board[nx][ny] == '$') {
                     count++;
                     board[nx][ny] = '.';
                 }
-                //문
+                
+                //문 발견
                 if (65 <= board[nx][ny] && board[nx][ny] <= 90) {
                     int key = board[nx][ny] - 65;
                     if (hasKey[key]) board[nx][ny] = '.';
@@ -78,13 +78,11 @@ public class Main {
                     int key = board[nx][ny] - 97;
                     hasKey[key] = true;
                     board[nx][ny] = '.';
-                    visited = new boolean[N + 2][M + 2];
                     queue.clear();
+                    visited = new boolean[N + 2][M + 2];
                 }
-
                 visited[nx][ny] = true;
                 queue.add(new Node(nx, ny));
-
             }
         }
     }
