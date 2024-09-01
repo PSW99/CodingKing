@@ -26,9 +26,14 @@ public class Main {
             graph.get(a).add(b);
             graph.get(b).add(a);
         }
-        
-        for (int i = 0; i < N; i++) dfs(i, 1);
+
+        for (int i = 0; i < N; i++) {
+            dfs(i, 1);
+            if (answer == 1) break;
+        }
+
         System.out.println(answer);
+
     }
 
     private static void dfs(int start, int depth) {
@@ -41,9 +46,11 @@ public class Main {
         for (int end : graph.get(start)) {
             if (!visited[end]) {
                 dfs(end, depth + 1);
+
             }
         }
         visited[start] = false;
+
     }
 }
 
