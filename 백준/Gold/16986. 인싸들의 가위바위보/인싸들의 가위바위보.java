@@ -1,107 +1,130 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
     private static int N, K;
-    private static int[][] compatability;
-    private static int[][] gestures = new int[3][20];
-    private static boolean[] used;
-    private static int[] perm;
+    private static int[] winCount = new int[3];
+    private static int[] gameCount = new int[3];
+    private static int[][] handGestures = new int[3][20];
+    private static boolean[] isUsed;
+    private static int[][] compatibility;
     private static int answer = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
-        compatability = new int[N][N];
+        compatibility = new int[N][N];
+        isUsed = new boolean[N];
+
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < N; j++) {
-                compatability[i][j] = Integer.parseInt(st.nextToken());
+                int result = Integer.parseInt(st.nextToken());
+                compatibility[i][j] = result;
             }
         }
 
         for (int i = 1; i < 3; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < 20; j++) {
-                gestures[i][j] = Integer.parseInt(st.nextToken()) - 1;
+                handGestures[i][j] = Integer.parseInt(st.nextToken()) - 1;
             }
         }
 
-        used = new boolean[N];
-        perm = new int[N];
-        permute(0);
-
+        backTracking(0, 0, 1);
         System.out.println(answer);
-
     }
 
-    private static void permute(int depth) {
-        if (depth == N) {
-            simulate();
+
+    private static void backTracking(int start, int front, int back) {
+        if (answer == 1) {
+            return;
+        }
+        if (winCount[1] == K || winCount[2] == K) {
             return;
         }
 
-        for (int i = 0; i < N; i++) {
-            if (!used[i]) {
-                used[i] = true;
-                perm[depth] = i;
-                permute(depth + 1);
-                used[i] = false;
-            }
+        if (winCount[0] == K) {
+            answer = 1;
+            return;
         }
-    }
 
-    private static void simulate() {
-        int[] winCount = new int[3];
-        int[] turn = new int[3];
+        int nonParticipant = 3 - (front + back);
 
-        int p1 = 0, p2 = 1;
+        int frontGesture = handGestures[front][gameCount[front]];
+        int backGesture = handGestures[back][gameCount[back]];
 
-        while (true) {
-            if (winCount[0] == K || winCount[1] == K || winCount[2] == K) {
-                return;
+        gameCount[front]++;
+        gameCount[back]++;
+
+        if (front == 0) {
+            for (int j = 0; j < N; j++) {
+                if (isUsed[j]) {
+                    continue;
+                }
+
+                isUsed[j] = true;
+                if (compatibility[j][backGesture] == 0) {
+                    winCount[back]++;
+                    backTracking(start + 1, back, nonParticipant);
+                    winCount[back]--;
+                } else if (compatibility[j][backGesture] == 1) {
+                    winCount[back]++;
+                    backTracking(start + 1, back, nonParticipant);
+                    winCount[back]--;
+                } else {
+                    winCount[front]++;
+                    backTracking(start + 1, front, nonParticipant);
+                    winCount[front]--;
+                }
+                isUsed[j] = false;
             }
 
-            if (turn[0] >= N || turn[1] >= N || turn[2] >= N) {
-                return;
+        } else if (back == 0) {
+            for (int j = 0; j < N; j++) {
+                if (isUsed[j]) {
+                    continue;
+                }
+
+                isUsed[j] = true;
+                if (compatibility[frontGesture][j] == 0) {
+                    winCount[back]++;
+                    backTracking(start + 1, back, nonParticipant);
+                    winCount[back]--;
+                } else if (compatibility[frontGesture][j] == 1) {
+                    winCount[front]++;
+                    backTracking(start + 1, front, nonParticipant);
+                    winCount[front]--;
+                } else {
+                    winCount[front]++;
+                    backTracking(start + 1, front, nonParticipant);
+                    winCount[front]--;
+                }
+                isUsed[j] = false;
             }
-
-            int g1 = getGesture(p1, turn[p1]);
-            int g2 = getGesture(p2, turn[p2]);
-
-            int result = compatability[g1][g2];
-
-            int winner;
-            if (result == 2) {
-                winner = p1;
-            } else if (result == 1) {
-                winner = Math.max(p1, p2);
+        } else {
+            if (compatibility[frontGesture][backGesture] == 0) {
+                winCount[back]++;
+                backTracking(start + 1, back, nonParticipant);
+                winCount[back]--;
+            } else if (compatibility[frontGesture][backGesture] == 1) {
+                int winner = Math.max(back, front);
+                winCount[winner]++;
+                backTracking(start + 1, winner, nonParticipant);
+                winCount[winner]--;
             } else {
-                winner = p2;
-            }
-
-            winCount[winner]++;
-            turn[p1]++;
-            turn[p2]++;
-
-            int next = 3 - p1 - p2;
-            p1 = winner;
-            p2 = next;
-
-            if (winCount[0] == K) {
-                answer = 1;
-                return;
+                winCount[front]++;
+                backTracking(start + 1, front, nonParticipant);
+                winCount[front]--;
             }
         }
-    }
-
-    private static int getGesture(int player, int t) {
-        if (player == 0) return perm[t];
-        return gestures[player][t];
+        gameCount[front]--;
+        gameCount[back]--;
     }
 }
