@@ -33,6 +33,7 @@ public class Main {
             if (count == 25 - K) {
                 answer++;
             }
+            return;
         }
 
         for (int i = 0; i < 4; i++) {
